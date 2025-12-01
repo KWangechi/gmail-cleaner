@@ -5,6 +5,7 @@ Handles OAuth2 authentication with Gmail API.
 """
 
 import os
+import platform
 import shutil
 import threading
 
@@ -94,8 +95,11 @@ def get_gmail_service():
                 try:
                     flow = InstalledAppFlow.from_client_secrets_file(creds_path, settings.scopes)
                     
-                    # Check if we have a browser available
-                    has_browser = shutil.which('xdg-open') or shutil.which('open') or os.environ.get('DISPLAY')
+                    # Check if we have a browser available (works on Windows, macOS, Linux)
+                    if platform.system() == 'Windows':
+                        has_browser = True  # Windows always has a browser
+                    else:
+                        has_browser = shutil.which('xdg-open') or shutil.which('open') or os.environ.get('DISPLAY')
                     
                     # For Docker: bind to 0.0.0.0 so callback can reach container
                     # For local: bind to localhost for security
