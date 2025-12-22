@@ -294,17 +294,21 @@ def get_gmail_service():
                     # The server listens on the internal port, but the redirect URI uses the external port
                     redirect_port = (
                         settings.oauth_external_port
-                        if settings.oauth_external_port is not None
+                        if isinstance(settings.oauth_external_port, int)
                         else settings.oauth_port
                     )
 
                     # Validate port ranges (1-65535)
-                    if not (1 <= settings.oauth_port <= 65535):
+                    if not isinstance(settings.oauth_port, int) or not (
+                        1 <= settings.oauth_port <= 65535
+                    ):
                         raise ValueError(
                             f"Invalid oauth_port: {settings.oauth_port}. "
                             "Port must be between 1 and 65535."
                         )
-                    if not (1 <= redirect_port <= 65535):
+                    if not isinstance(redirect_port, int) or not (
+                        1 <= redirect_port <= 65535
+                    ):
                         raise ValueError(
                             f"Invalid redirect port: {redirect_port}. "
                             "Port must be between 1 and 65535."
